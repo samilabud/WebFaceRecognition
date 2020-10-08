@@ -10,6 +10,15 @@ import './App.css';
 import 'tachyons';
 import Particles from 'react-particles-js';
 import {particleOptions} from './constants/particles';
+import {enviroments} from './constants/config';
+
+
+let urlapi = "";
+if(process.env.NODE_ENV.indexOf("development")>=0){
+  urlapi = enviroments.development.urlapi;
+}else{
+  urlapi = enviroments.production.urlapi;
+}
 
 const initialState = {
   input:'',
@@ -77,12 +86,16 @@ class App extends Component {
   onInputChange = (event) => {
     this.setState({input:event.target.value});
   }
+  onHelpClicked = () =>{
+    document.getElementById("help").style.display="block";
+  }
 
   onImageSubmit = () => {
+    document.getElementById("help").style.display="none";
     this.setState ({
       imageURL : this.state.input
     });
-    fetch("https://apifacesrecognition.herokuapp.com/imageurl",{
+    fetch(urlapi+"/imageurl",{
       method: "post",
       headers: {"Content-Type":'application/json'},
       body: JSON.stringify({
@@ -94,7 +107,7 @@ class App extends Component {
         (response) => {
 
           if(response){
-            fetch("https://apifacesrecognition.herokuapp.com/image",{
+            fetch(urlapi+"/image",{
               method: "put",
               headers: {"Content-Type":'application/json'},
               body: JSON.stringify({
@@ -114,7 +127,6 @@ class App extends Component {
       .catch((error)=>console.log(error))
   }
   onRouteChange = (route) => {
-
     if(route==='signout'){
       this.setState(initialState)
       route='signin';
@@ -129,20 +141,20 @@ class App extends Component {
         return (
           <div className="App">
           <Particles params={ particleOptions} className="particle"/>
-          <Navigation  onRouteChange={this.onRouteChange} isSignedin={isSignedin} />
+          <Navigation  onRouteChange={this.onRouteChange} isSignedin={isSignedin} Route={this.state.route} />
             { 
               route === 'home'?
               <div>
                   
                   <Logo />
                   <Rank user = {user}/>
-                  <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onImageSubmit} />
+                  <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onImageSubmit} onHelpClicked={this.onHelpClicked} />
                   <FaceRecognition box={faceBox} imageURL={imageURL} />
               </div>
               :(route==='signin'?
-                <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
+                <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser} urlApi={urlapi}/>
                 :
-                <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser}/>
+                <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser} urlApi={urlapi}/>
               )           
             }
           </div>

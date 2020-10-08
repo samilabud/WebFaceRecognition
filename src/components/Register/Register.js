@@ -19,7 +19,7 @@ class Register extends Component{
         this.setState({registerPassword:event.target.value});
     }
     onSubmitRegister = ()=>{
-        fetch("https://apifacesrecognition.herokuapp.com/register",{
+        fetch(this.props.urlApi+"/register",{
             method:'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -46,22 +46,22 @@ class Register extends Component{
             <main className="pa4 black-80">
                 <form className="measure">
                 <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-                <legend className="f4 fw6 ph0 mh0">Register</legend>
+                <legend className="f4 fw6 ph0 mh0">Formulario de Registro</legend>
                 <div className="mt3">
-                    <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
+                    <label className="db fw6 lh-copy f6" htmlFor="name">Nombre</label>
                     <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
                     type="text" name="name"  id="name"
                     onChange={this.onNameChange} />
                 </div>
                 <div className="mt3">
-                    <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
+                    <label className="db fw6 lh-copy f6" htmlFor="email-address">Correo</label>
                     <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" 
                     name="email-address"  id="email-address" 
                     onChange={this.onEmailChange}
                     />
                 </div>
                 <div className="mv3">
-                    <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
+                    <label className="db fw6 lh-copy f6" htmlFor="password">Contraseña</label>
                     <input className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" 
                     name="password"  id="password" 
                     onChange={this.onPasswordChange}
@@ -71,12 +71,12 @@ class Register extends Component{
                 <div>
                 <input
                     onClick={this.onSubmitRegister}
-                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="button" value="Register" />
+                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="button" value="Registrarse" />
     
                 </div>
                 <div className="lh-copy mt3">
                     <p> Tienes una cuenta?
-                        <a onClick={()=>onRouteChange('signin')} href="#0" className="f6 link dim black db pointer">Signin</a>
+                        <a onClick={()=>onRouteChange('signin')} href="#0" className="f6 link dim black db pointer">Ingresar</a>
                     </p>
                 </div>
                 
