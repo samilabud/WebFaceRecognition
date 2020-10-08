@@ -14,10 +14,12 @@ const ImageLinkForm = ({onInputChange, onButtonSubmit, onHelpClicked}) => {
                 </div>
             </div>
             <div className="">
-                <a onClick={onHelpClicked} className="f5 center" href="void:0">¿Ayuda?</a> <br />
+                <button id="showHelp" onClick={onHelpClicked} className="f5 center">¿Ayuda?</button> <br />
                 <div id="help" className="center">
-                    {'Ej. copie y pegue en el campo de texto el siguiente enlace: '} <br />
-                    {'https://i2-prod.mirror.co.uk/incoming/article14334083.ece/ALTERNATES/s615/3_Beautiful-girl-with-a-gentle-smile.jpg'}
+                    {'Ej. copie y pegue en el campo de texto el siguiente enlace: '} 
+                    <br />
+                    {'https://i2-prod.mirror.co.uk/incoming/article14334083.ece/ALTERNATES/s615/3_Beautiful-girl-with-a-gentle-smile.jpg'}<br />
+                    {'https://merriam-webster.com/assets/mw/images/article/art-wap-article-main/family-of-four-7101-90ebbf35ea8e9b9d264dbb2ab724bc4e@1x.jpg'}
                 </div>
             </div>
         </div>

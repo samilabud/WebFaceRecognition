@@ -23,7 +23,7 @@ if(process.env.NODE_ENV.indexOf("development")>=0){
 const initialState = {
   input:'',
   imageURL:'',
-  faceBox: '',
+  facesBoxes: [],
   route: 'signin',
   isSignedin: false,
   user:{
@@ -40,7 +40,7 @@ class App extends Component {
     this.state ={
       input:'',
       imageURL:'',
-      faceBox: '',
+      facesBoxes: [],
       route: 'signin',
       isSignedin: false,
       user:{
@@ -64,23 +64,32 @@ class App extends Component {
   }
 
   calculateFaceLocation = (data) => {
-
-    let boxFace = data['outputs'][0]['data'].regions[0].region_info.bounding_box;
     const image = document.getElementById("inputImage");
     const width = Number(image.width);
     const height = Number(image.height);
 
-    return {
-      leftCol: boxFace.left_col * width,
-      topRow: boxFace.top_row * height,
-      rightCol: width - (boxFace.right_col * width),
-      bottomCol: height - (boxFace.bottom_row * height)
+    //Almacenando todas las cajas
+    let facesBoxes = [];
+    for(let region of data['outputs'][0]['data'].regions) {
+      facesBoxes.push(region.region_info.bounding_box)
     }
+    //Retornando todas las cajas
+    let results = [];
+    for(let boxFace of facesBoxes) {
+      results.push({
+        leftCol: boxFace.left_col * width,
+        topRow: boxFace.top_row * height,
+        rightCol: width - (boxFace.right_col * width),
+        bottomCol: height - (boxFace.bottom_row * height)
+      })
+    }
+
+    return results;
 
   }
  
-  displayFaceBox = (boxFace) => {
-    this.setState({faceBox:boxFace});
+  displayFaceBox = (facesBoxes) => {
+    this.setState({facesBoxes:facesBoxes});
   }
 
   onInputChange = (event) => {
@@ -88,10 +97,12 @@ class App extends Component {
   }
   onHelpClicked = () =>{
     document.getElementById("help").style.display="block";
+    document.getElementById("showHelp").style.display="none";
   }
 
   onImageSubmit = () => {
     document.getElementById("help").style.display="none";
+    document.getElementById("showHelp").style.display="block";
     this.setState ({
       imageURL : this.state.input
     });
@@ -137,7 +148,7 @@ class App extends Component {
   }
 
   render(){
-        const { isSignedin, imageURL, faceBox, route, user } = this.state;
+        const { isSignedin, imageURL, facesBoxes, route, user } = this.state;
         return (
           <div className="App">
           <Particles params={ particleOptions} className="particle"/>
@@ -149,7 +160,7 @@ class App extends Component {
                   <Logo />
                   <Rank user = {user}/>
                   <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onImageSubmit} onHelpClicked={this.onHelpClicked} />
-                  <FaceRecognition box={faceBox} imageURL={imageURL} />
+                  <FaceRecognition boxes={facesBoxes} imageURL={imageURL} />
               </div>
               :(route==='signin'?
                 <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser} urlApi={urlapi}/>
