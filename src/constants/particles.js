@@ -1,47 +1,64 @@
 export const particleOptions = {
-    "particles":{
-       "number":{
-          "value":80,
-          "density":{
-             "enable":true,
-             "value_area":800
-          }
+   fpsLimit: 120,
+   interactivity: {
+       events: {
+           onClick: {
+               enable: true,
+               mode: "push",
+           },
+           onHover: {
+               enable: true,
+               mode: "repulse",
+           },
+           resize: true,
        },
-       "color":{
-          "value":"#ffffff"
+       modes: {
+           push: {
+               quantity: 4,
+           },
+           repulse: {
+               distance: 200,
+               duration: 0.4,
+           },
        },
-       "line_linked":{
-          "enable":true,
-          "distance":150,
-          "color":"#ffffff",
-          "opacity":0.4,
-          "width":1
-       }
-    },
-    "interactivity":{
-       "detect_on":"window",
-       "events":{
-          "onhover":{
-             "enable":true,
-             "mode":"repulse"
-          },
-          "onclick":{
-             "enable":true,
-             "mode":"push"
-          },
-          "resize":true
+   },
+   particles: {
+       color: {
+           value: "#ffffff",
        },
-       "modes":{
-          "repulse":{
-             "distance":200,
-             "duration":0.4
-          },
-          "push":{
-             "particles_nb":4
-          }
-       }
-    },
-    "retina_detect":true
-  };
-
-  // All propertys url https://codepen.io/pen/?&editable=true=https%3A%2F%2Fvincentgarreau.com%2Fparticles.js%2F
+       links: {
+           color: "#ffffff",
+           distance: 150,
+           enable: true,
+           opacity: 0.5,
+           width: 1,
+       },
+       move: {
+           direction: "none",
+           enable: true,
+           outModes: {
+               default: "bounce",
+           },
+           random: true,
+           speed: 6,
+           straight: false,
+       },
+       number: {
+           density: {
+               enable: true,
+               area: 800,
+           },
+           value: 80,
+       },
+       opacity: {
+           value: 0.2,
+       },
+       shape: {
+           type: "circle",
+       },
+       size: {
+           value: { min: 1, max: 5 },
+       },
+   },
+   detectRetina: true,
+};

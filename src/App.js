@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useCallback} from 'react';
 import Navigation from './components/Navigation/Navigation'
 import SignIn from './components/Signin/Signin'
 import Register from './components/Register/Register'
@@ -8,7 +8,8 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm'
 import Rank from './components/Rank/Rank'
 import './App.css';
 import 'tachyons';
-import Particles from 'react-particles-js';
+import Particles from "react-tsparticles";
+import { loadSlim } from "tsparticles-slim";
 import {particleOptions} from './constants/particles';
 import {enviroments} from './constants/config';
 
@@ -34,36 +35,34 @@ const initialState = {
     joined: ''
   }
 }
-class App extends Component {
-  constructor(){
-    super();
-    this.state ={
-      input:'',
-      imageURL:'',
-      facesBoxes: [],
-      route: 'signin',
-      isSignedin: false,
-      user:{
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
+
+const App = () => {
+  const [faceState, setFaceState] = useState({
+    input:'',
+    imageURL:'',
+    facesBoxes: [],
+    route: 'signin',
+    isSignedin: false,
+    user:{
+      id: '',
+      name: '',
+      email: '',
+      entries: 0,
+      joined: ''
     }
-  }
-  loadUser = (data) =>{
-    this.setState({user: {
+  });
+
+  const loadUser = (data) =>{
+    setFaceState({user: {
         id: data.id,
         name: data.name,
         email: data.email,
         entries: data.entries,
         joined: data.joinen
     }})
-
   }
 
-  calculateFaceLocation = (data) => {
+  const calculateFaceLocation = (data) => {
     const image = document.getElementById("inputImage");
     const width = Number(image.width);
     const height = Number(image.height);
@@ -88,29 +87,29 @@ class App extends Component {
 
   }
  
-  displayFaceBox = (facesBoxes) => {
-    this.setState({facesBoxes:facesBoxes});
+  const displayFaceBox = (facesBoxes) => {
+    setFaceState({...faceState, facesBoxes: facesBoxes});
   }
 
-  onInputChange = (event) => {
-    this.setState({input:event.target.value});
+  const onInputChange = (event) => {
+    setFaceState({...faceState,input:event.target.value});
   }
-  onHelpClicked = () =>{
+  const onHelpClicked = () =>{
     document.getElementById("help").style.display="block";
     document.getElementById("showHelp").style.display="none";
   }
 
-  onImageSubmit = () => {
+  const onImageSubmit = () => {
     document.getElementById("help").style.display="none";
     document.getElementById("showHelp").style.display="block";
-    this.setState ({
-      imageURL : this.state.input
+    setFaceState({...faceState,
+      imageURL : faceState.input
     });
     fetch(urlapi+"/imageurl",{
       method: "post",
       headers: {"Content-Type":'application/json'},
       body: JSON.stringify({
-        input:this.state.input
+        input:faceState.input
       })
     })
       .then(response=>response.json())
@@ -122,55 +121,56 @@ class App extends Component {
               method: "put",
               headers: {"Content-Type":'application/json'},
               body: JSON.stringify({
-                id:this.state.user.id
+                id:faceState.user.id
               })
             })
             .then(data=>data.json())
-            .then(count=>{
-              this.setState(Object.assign(this.state.user, {entries:count}));
-            })
+            .then(count=>setFaceState({...faceState, user: {...faceState.user, entries:count}}))
             .catch(err=>console.log("Ocurrio un error guardando los entries en el api local." + err))
           }
 
-          this.displayFaceBox(this.calculateFaceLocation(response))
+          displayFaceBox(calculateFaceLocation(response))
         }
       )
       .catch((error)=>console.log(error))
   }
-  onRouteChange = (route) => {
+  const onRouteChange = (route) => {
     if(route==='signout'){
-      this.setState(initialState)
+      setFaceState(initialState)
       route='signin';
     }else if(route==='home')
-      this.setState({isSignedin:true})
+    setFaceState({...faceState,isSignedin:true})
 
-    this.setState({route:route});
+    setFaceState({...faceState,route:route});
   }
 
-  render(){
-        const { isSignedin, imageURL, facesBoxes, route, user } = this.state;
-        return (
-          <div className="App">
-          <Particles params={ particleOptions} className="particle"/>
-          <Navigation  onRouteChange={this.onRouteChange} isSignedin={isSignedin} Route={this.state.route} />
-            { 
-              route === 'home'?
-              <div>
-                  
-                  <Logo />
-                  <Rank user = {user}/>
-                  <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onImageSubmit} onHelpClicked={this.onHelpClicked} />
-                  <FaceRecognition boxes={facesBoxes} imageURL={imageURL} />
-              </div>
-              :(route==='signin'?
-                <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser} urlApi={urlapi}/>
-                :
-                <Register onRouteChange={this.onRouteChange} loadUser={this.loadUser} urlApi={urlapi}/>
-              )           
-            }
-          </div>
-        );
-    }
+  const particlesInit = useCallback(async engine => {
+    await loadSlim(engine);
+  }, []);
+
+  const { isSignedin, imageURL, facesBoxes, route, user } = faceState;
+
+  return (
+    <div className="App">
+    <Particles id="tsparticles" init={particlesInit} options={particleOptions} className="particle"/>
+    <Navigation  onRouteChange={onRouteChange} isSignedin={isSignedin} Route={faceState.route} />
+      { 
+        route === 'home'?
+        <div>
+            <Logo />
+            <Rank user = {user}/>
+            <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onImageSubmit} onHelpClicked={onHelpClicked} />
+            <FaceRecognition boxes={facesBoxes} imageURL={imageURL} />
+        </div>
+        :(route==='signin'?
+          <SignIn onRouteChange={onRouteChange} loadUser={loadUser} urlApi={urlapi}/>
+          :
+          <Register onRouteChange={onRouteChange} loadUser={loadUser} urlApi={urlapi}/>
+        )           
+      }
+    </div>
+  );
+    
 }
 
 export default App;
