@@ -21,45 +21,29 @@ if(process.env.NODE_ENV.indexOf("development")>=0){
   urlapi = enviroments.production.urlapi;
 }
 
-const initialState = {
-  input:'',
-  imageURL:'',
-  facesBoxes: [],
-  route: 'signin',
-  isSignedin: false,
-  user:{
-    id: '',
-    name: '',
-    email: '',
-    entries: 0,
-    joined: ''
-  }
-}
-
 const App = () => {
-  const [faceState, setFaceState] = useState({
-    input:'',
-    imageURL:'',
-    facesBoxes: [],
-    route: 'signin',
-    isSignedin: false,
-    user:{
+  const [input, setInput] = useState('');
+  const [imageURL, setImageURL] = useState('');
+  const [facesBoxes, setFacesBoxes] = useState([]);
+  const [route, setRoute] = useState('signin');
+  const [isSignedin, setIsSignedin] = useState(false);
+  const defaultUserData = {
       id: '',
       name: '',
       email: '',
       entries: 0,
       joined: ''
-    }
-  });
+  }
+  const [user, setUser] = useState(defaultUserData);
 
   const loadUser = (data) =>{
-    setFaceState({...faceState, user: {
+    setUser({
         id: data.id,
         name: data.name,
         email: data.email,
         entries: data.entries,
         joined: data.joinen
-    }})
+    })
   }
 
   const calculateFaceLocation = (data) => {
@@ -82,17 +66,15 @@ const App = () => {
         bottomCol: height - (boxFace.bottom_row * height)
       })
     }
-
     return results;
 
   }
- 
   const displayFaceBox = (facesBoxes) => {
-    setFaceState({...faceState, facesBoxes: facesBoxes});
+    setFacesBoxes(facesBoxes);
   }
 
   const onInputChange = (event) => {
-    setFaceState({...faceState,input:event.target.value});
+    setInput(event.target.value);
   }
   const onHelpClicked = () =>{
     document.getElementById("help").style.display="block";
@@ -102,14 +84,12 @@ const App = () => {
   const onImageSubmit = () => {
     document.getElementById("help").style.display="none";
     document.getElementById("showHelp").style.display="block";
-    setFaceState({...faceState,
-      imageURL : faceState.input
-    });
+    setImageURL(input);
     fetch(urlapi+"/imageurl",{
       method: "post",
       headers: {"Content-Type":'application/json'},
       body: JSON.stringify({
-        input:faceState.input
+        input:input
       })
     })
       .then(response=>response.json())
@@ -117,16 +97,15 @@ const App = () => {
         (response) => {
 
           if(response){
-            console.log(response,'response')
             fetch(urlapi+"/image",{
               method: "put",
               headers: {"Content-Type":'application/json'},
               body: JSON.stringify({
-                id:faceState.user.id
+                id:user.id
               })
             })
             .then(data=>data.json())
-            .then(count=>setFaceState({...faceState, user: {...faceState.user, entries:count}}))
+            .then(count=>setUser({...user, entries:count}))
             .catch(err=>console.log("Ocurrio un error guardando los entries en el api local." + err))
           }else{
             console.log("not response")
@@ -139,24 +118,27 @@ const App = () => {
   }
   const onRouteChange = (route) => {
     if(route==='signout'){
-      setFaceState(initialState)
-      route='signin';
+      setInput('');
+      setImageURL('');
+      setFacesBoxes([]);
+      setRoute('signin');
+      setIsSignedin(false);
+      setUser(defaultUserData);
+      setRoute('signin');
     }else if(route==='home')
-    setFaceState({...faceState,isSignedin:true})
+    setIsSignedin(true)
 
-    setFaceState({...faceState,route:route});
+    setRoute(route);
   }
 
   const particlesInit = useCallback(async engine => {
     await loadSlim(engine);
   }, []);
 
-  const { isSignedin, imageURL, facesBoxes, route, user } = faceState;
-
   return (
     <div className="App">
     <Particles id="tsparticles" init={particlesInit} options={particleOptions} className="particle"/>
-    <Navigation  onRouteChange={onRouteChange} isSignedin={isSignedin} Route={faceState.route} />
+    <Navigation  onRouteChange={onRouteChange} isSignedin={isSignedin} Route={route} />
       { 
         route === 'home'?
         <div>
