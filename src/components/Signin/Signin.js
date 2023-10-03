@@ -15,6 +15,7 @@ class Signin extends Component {
         this.setState({signInPassword:event.target.value})
     }
     onSubmitSignIn = () =>{
+        console.log(this.props.urlApi+"/signin")
         fetch(this.props.urlApi+"/signin",{
             method: 'post',
             headers: {'Content-Type': 'application/json'},
@@ -25,7 +26,7 @@ class Signin extends Component {
         })
         .then(data=>data.json())
         .then(userData=>{
-            console.log(userData);
+            console.log(userData,'userData');
             if(userData.id){
                 this.props.loadUser(userData);
                 this.props.onRouteChange('home');

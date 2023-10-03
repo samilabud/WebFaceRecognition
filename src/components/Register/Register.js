@@ -18,7 +18,8 @@ class Register extends Component{
     onPasswordChange = (event) =>{
         this.setState({registerPassword:event.target.value});
     }
-    onSubmitRegister = ()=>{
+    onSubmitRegister = (event)=>{
+        event.preventDefault();
         fetch(this.props.urlApi+"/register",{
             method:'post',
             headers: {'Content-Type': 'application/json'},
@@ -32,7 +33,7 @@ class Register extends Component{
         .then(user=>{
             if(user.id){
                 this.props.loadUser(user);
-                 this.props.onRouteChange('home');
+                this.props.onRouteChange('home');
             }else{
                 alert("No te pudiste registrar");
             }

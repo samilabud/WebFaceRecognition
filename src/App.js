@@ -53,7 +53,7 @@ const App = () => {
   });
 
   const loadUser = (data) =>{
-    setFaceState({user: {
+    setFaceState({...faceState, user: {
         id: data.id,
         name: data.name,
         email: data.email,
@@ -117,6 +117,7 @@ const App = () => {
         (response) => {
 
           if(response){
+            console.log(response,'response')
             fetch(urlapi+"/image",{
               method: "put",
               headers: {"Content-Type":'application/json'},
@@ -127,6 +128,8 @@ const App = () => {
             .then(data=>data.json())
             .then(count=>setFaceState({...faceState, user: {...faceState.user, entries:count}}))
             .catch(err=>console.log("Ocurrio un error guardando los entries en el api local." + err))
+          }else{
+            console.log("not response")
           }
 
           displayFaceBox(calculateFaceLocation(response))
