@@ -87,6 +87,7 @@ const App = () => {
     setImageURL(input);
     fetch(urlapi+"/imageurl",{
       method: "post",
+      mode: "no-cors",
       headers: {"Content-Type":'application/json'},
       body: JSON.stringify({
         input:input
