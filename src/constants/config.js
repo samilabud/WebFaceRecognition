@@ -3,7 +3,7 @@ export const enviroments = {
         urlapi: "http://localhost:3000"
     },
     production:{
-        urlapi: "https://apifacesrecognition.herokuapp.com"
+        urlapi: "https://api-face-recognition.onrender.com/"
     }
 
 }
