@@ -6,7 +6,8 @@ class Register extends Component{
         this.state = {
             registerName: '',
             registerEmail: '',
-            registerPassword: ''
+            registerPassword: '',
+            loading: false,
         }
     }
     onNameChange = (event) =>{
@@ -20,6 +21,7 @@ class Register extends Component{
     }
     onSubmitRegister = (event)=>{
         event.preventDefault();
+        this.setState({loading: true});
         fetch(this.props.urlApi+"/register",{
             method:'post',
             headers: {'Content-Type': 'application/json'},
@@ -37,6 +39,7 @@ class Register extends Component{
             }else{
                 alert("No te pudiste registrar");
             }
+            this.setState({loading: false});
         })
         
     }
@@ -69,11 +72,11 @@ class Register extends Component{
                     />
                 </div>
                 </fieldset>
-                <div>
-                <input
-                    onClick={this.onSubmitRegister}
-                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="button" value="Registrarse" />
-    
+                <div className="signupButtonContainer">
+                    <input
+                        onClick={this.onSubmitRegister}
+                    className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="button" value="Registrarse" />
+                     {this.state.loading && (<div className="lds-dual-ring"></div>)}
                 </div>
                 <div className="lh-copy mt3">
                     <p> Tienes una cuenta?

@@ -5,7 +5,8 @@ class Signin extends Component {
         super();
         this.state = {
             signInEmail: '',
-            signInPassword: ''
+            signInPassword: '',
+            loading: false,
         }
     }
     onEmailChange = (event) =>{
@@ -15,6 +16,7 @@ class Signin extends Component {
         this.setState({signInPassword:event.target.value})
     }
     onSubmitSignIn = () =>{
+        this.setState({loading: true});
         fetch(this.props.urlApi+"/signin",{
             method: 'post',
             headers: {'Content-Type': 'application/json'},
@@ -31,6 +33,7 @@ class Signin extends Component {
             }else{
                 alert(userData);
             }
+            this.setState({loading: false});
         })
 
         
@@ -58,11 +61,11 @@ class Signin extends Component {
                         />
                     </div>
                     </fieldset>
-                    <div>
-                    <input
-                        onClick={this.onSubmitSignIn}
-                    className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="button" value="Entrar" />
-        
+                    <div className="signinButtonContainer">
+                        <input
+                            onClick={this.onSubmitSignIn}
+                        className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="button" value="Entrar" />
+                        {this.state.loading && (<div className="lds-dual-ring"></div>)}
                     </div>
                     <div className="lh-copy mt3">
                     <a onClick={()=>onRouteChange('register')} href="#0" className="f6 link dim black db pointer">Registrarse</a>
