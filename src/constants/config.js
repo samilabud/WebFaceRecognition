@@ -3,6 +3,6 @@ export const enviroments = {
     urlapi: "http://localhost:3000",
   },
   production: {
-    urlapi: "https://apifacerecognition-production.up.railway.app",
+    urlapi: "https://api-face-recognition.onrender.com",
   },
 };
