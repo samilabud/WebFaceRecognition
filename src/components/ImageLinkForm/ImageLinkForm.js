@@ -62,7 +62,7 @@ const ImageLinkForm = ({
         <br />
         <div
           id="help"
-          className="center"
+          className="center shadow-5 pb3"
           style={{
             border: "1px solid black",
             width: "235px",
@@ -70,7 +70,7 @@ const ImageLinkForm = ({
           }}
         >
           <h5>Click on these examples to paste the URL:</h5>
-          <ul style={{ listStyleType: "none" }}>
+          <ul style={{ listStyleType: "none", padding: "0" }}>
             {links.map((link, index) => (
               <li
                 key={index}
@@ -83,7 +83,7 @@ const ImageLinkForm = ({
           </ul>
           <button
             id="showHelp"
-            className="f5 center"
+            className="f5 center w-30 grow f4 link p3 pv2 dib white bg-light-blue center"
             onClick={onHideHelpClicked}
             style={{ marginBottom: "2px" }}
           >
